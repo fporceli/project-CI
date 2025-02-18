@@ -9,10 +9,16 @@ pipeline {
         jdk "JAVA 17"
     }
 
+    environment {
+        registryCredential = "ecr:us-east-1:awscredentials"
+        imageName = "381492115972.dkr.ecr.us-east-1.amazonaws.com/vprofileappimg"
+        vprofileRegistry = "https://381492115972.dkr.ecr.us-east-1.amazonaws.com"
+    }
+
     stages{
         stage('Fetch code') {
             steps {
-                git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
+                git branch: 'docker', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }           
         }
         stage('Test') {
@@ -60,7 +66,7 @@ pipeline {
               }
             }
           }
-          stage("UploadArtifact"){
+          /*stage("UploadArtifact"){
             steps{
                 nexusArtifactUploader(
                   nexusVersion: 'nexus3',
@@ -77,6 +83,24 @@ pipeline {
                      type: 'war']
                   ]
                 )
+            }
+        }*/
+        stage('Build App Image') {
+            steps{
+                script{
+                    dockerImage = docker.build( imageName + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+                }
+            }
+        }
+
+        stage('Upload App Image') {
+            steps{
+                script{
+                    docker.withRegistry ( vprofileRegistry, registryCredential ){
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
+                }
             }
         }
     }
