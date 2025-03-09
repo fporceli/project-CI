@@ -16,13 +16,13 @@
 [![AWS Diagram](https://project-ci-repository.s3.sa-east-1.amazonaws.com/DiagramaAWS.png "AWS Diagram")](https://project-ci-repository.s3.sa-east-1.amazonaws.com/DiagramaAWS.png "AWS Diagram")
 
 ## Initialization and configuration of servers.
-###Step 01 - Set up servers
+### Step 01 - Set up servers
 To set up the three servers, simply navigate to the ** /Setups** directory and run the startup script for each one within AWS. It's important to note that the SonarQube and Jenkins servers will be booted on an Ubuntu Server 24 image, while the rest will be booted on an Amazon Linux 23.
 
-###Step 02 - Configure security groups
+### Step 02 - Configure security groups
 In the flowchart we can see the entry rules for each security group. We need to pay attention to these rules, because if they are not configured correctly the servers will not be able to communicate with each other.
 
-###Step 03 - SonarQube analysis
+### Step 03 - SonarQube analysis
 The first step is to create a step that will analyze our code
 
 ```groovy
@@ -61,7 +61,7 @@ stage("Sonar Code Analysis") {
         }
 ```
 **OBS: For academic purposes only, we will not make any changes to the Quality Gates.**
-###Step 04 - Configure Nexus Repository
+### Step 04 - Configure Nexus Repository
 
 Nexus is a repository manager used to store, organize and distribute software artifacts, such as libraries, packages and containers. We will store it using a new step in our pipeline.
 
@@ -89,7 +89,7 @@ stage("UploadArtifact"){
 
 OBS: You will create a maven2(hosted) type repository, and don't forget to configure the nexus credentials within your Jenkins, so that it can make changes within the server.
 
-###Step 05 - Configure Slack Notification (optional)
+### Step 05 - Configure Slack Notification (optional)
 
 To finalize our pipeline, we can set up a notification via Slack to see whether the pipeline ran successfully or not.
 
